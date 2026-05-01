@@ -1,0 +1,1349 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>MicroPure AI — Pitch Deck</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+  :root{
+    --bg-0:#05070f;
+    --bg-1:#0a1024;
+    --bg-2:#10173a;
+    --ink:#e6edf7;
+    --ink-dim:#94a3c4;
+    --line:rgba(148,163,196,.18);
+    --cyan:#22d3ee;
+    --cyan-2:#06b6d4;
+    --violet:#a78bfa;
+    --emerald:#34d399;
+    --amber:#fbbf24;
+    --rose:#fb7185;
+    --grad: linear-gradient(135deg,#22d3ee 0%,#a78bfa 60%,#fb7185 100%);
+    --card: rgba(255,255,255,.04);
+    --card-2: rgba(255,255,255,.06);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;height:100%;background:var(--bg-0);color:var(--ink);font-family:'Inter',system-ui,sans-serif;overflow:hidden;-webkit-font-smoothing:antialiased}
+  /* Animated background */
+  .bg{
+    position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:
+      radial-gradient(1100px 700px at 12% 18%, rgba(34,211,238,.18), transparent 60%),
+      radial-gradient(900px 600px at 85% 80%, rgba(167,139,250,.18), transparent 60%),
+      radial-gradient(700px 500px at 60% 30%, rgba(251,113,133,.10), transparent 65%),
+      linear-gradient(180deg, #05070f 0%, #060a1a 60%, #05070f 100%);
+  }
+  .grid{
+    position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.35;
+    background-image:
+      linear-gradient(rgba(148,163,196,.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(148,163,196,.06) 1px, transparent 1px);
+    background-size: 56px 56px;
+    mask-image: radial-gradient(ellipse at center, #000 30%, transparent 75%);
+  }
+  .noise{position:fixed;inset:0;z-index:2;pointer-events:none;mix-blend-mode:overlay;opacity:.05;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='1.6' numOctaves='2'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.6'/></svg>");}
+  /* Deck */
+  .deck{position:relative;z-index:5;width:100vw;height:100vh;overflow:hidden}
+  .slide{
+    position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    padding:5vh 6vw;opacity:0;visibility:hidden;transform:translateY(16px) scale(.995);
+    transition:opacity .45s ease, transform .55s cubic-bezier(.2,.7,.2,1), visibility .45s;
+  }
+  .slide.active{opacity:1;visibility:visible;transform:none}
+  .frame{width:100%;max-width:1400px;height:100%;display:flex;flex-direction:column;justify-content:center;gap:24px}
+  .row{display:flex;gap:28px;align-items:stretch;width:100%}
+  .col{flex:1;min-width:0}
+
+  /* Typography */
+  .eyebrow{display:inline-flex;align-items:center;gap:10px;font:600 12px/1 'Inter';letter-spacing:.22em;text-transform:uppercase;color:var(--ink-dim)}
+  .eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--cyan);box-shadow:0 0 12px var(--cyan)}
+  h1.display{font:800 clamp(48px,8vw,128px)/.95 'Space Grotesk';letter-spacing:-.02em;margin:18px 0 0 0}
+  h1.display .grad{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+  h2{font:700 clamp(30px,3.8vw,58px)/1.05 'Space Grotesk';letter-spacing:-.015em;margin:8px 0 4px 0}
+  h2 .grad{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+  h3{font:600 clamp(18px,1.6vw,24px)/1.2 'Inter';margin:0}
+  .lede{font:400 clamp(15px,1.3vw,20px)/1.5 'Inter';color:var(--ink-dim);max-width:62ch}
+  .small{font:500 13px/1.4 'Inter';color:var(--ink-dim)}
+
+  /* Cards */
+  .card{
+    background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px;
+    backdrop-filter: blur(8px);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.04), 0 20px 50px rgba(0,0,0,.35);
+  }
+  .card.glow{position:relative;overflow:hidden}
+  .card.glow::before{content:"";position:absolute;inset:-1px;border-radius:inherit;padding:1px;background:var(--grad);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor; mask-composite: exclude; opacity:.6;pointer-events:none}
+  .pill{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border:1px solid var(--line);border-radius:999px;font:600 12px/1 'Inter';color:var(--ink-dim);background:rgba(255,255,255,.03)}
+  .pill.cyan{color:#a5f3fc;border-color:rgba(34,211,238,.35);background:rgba(34,211,238,.08)}
+  .pill.violet{color:#ddd6fe;border-color:rgba(167,139,250,.35);background:rgba(167,139,250,.08)}
+  .pill.emerald{color:#a7f3d0;border-color:rgba(52,211,153,.35);background:rgba(52,211,153,.08)}
+  .pill.rose{color:#fecdd3;border-color:rgba(251,113,133,.35);background:rgba(251,113,133,.08)}
+  .pill.amber{color:#fde68a;border-color:rgba(251,191,36,.35);background:rgba(251,191,36,.08)}
+
+  /* Stat blocks */
+  .stat{display:flex;flex-direction:column;gap:6px}
+  .stat .num{font:800 clamp(34px,4.2vw,60px)/1 'Space Grotesk';letter-spacing:-.02em;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .stat .lbl{font:500 13px/1.3 'Inter';color:var(--ink-dim)}
+
+  /* Layouts for problem icons */
+  .audience{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .audience .a{display:flex;align-items:center;gap:12px;padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--card)}
+  .audience .a .ico{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;background:rgba(34,211,238,.12);color:#a5f3fc;border:1px solid rgba(34,211,238,.3)}
+  .audience .a .t{font:600 14px/1.2 'Inter'}
+  .audience .a .d{font:400 12px/1.3 'Inter';color:var(--ink-dim)}
+
+  /* Charts */
+  .chart-wrap{position:relative;width:100%;height:260px}
+  .chart-wrap.tall{height:330px}
+  .chart-wrap.short{height:220px}
+
+  /* Solution feature */
+  .feat{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+  .feat .f{display:flex;gap:12px;align-items:flex-start;padding:14px;border-radius:14px;border:1px solid var(--line);background:var(--card)}
+  .feat .f .ico{flex:0 0 36px;width:36px;height:36px;border-radius:10px;display:grid;place-items:center;color:#0a1024;background:linear-gradient(135deg,#22d3ee,#a78bfa)}
+  .feat .f .t{font:600 14px/1.25 'Inter'}
+  .feat .f .d{font:400 13px/1.4 'Inter';color:var(--ink-dim)}
+
+  /* Compare table */
+  .vs{width:100%;border-collapse:separate;border-spacing:0;font:500 14px/1.3 'Inter'}
+  .vs th,.vs td{padding:13px 14px;text-align:left;border-bottom:1px solid var(--line)}
+  .vs th{font:700 11px/1 'Inter';letter-spacing:.16em;text-transform:uppercase;color:var(--ink-dim)}
+  .vs td.good{color:#a7f3d0}
+  .vs td.bad{color:#fecdd3}
+  .vs td.meh{color:#fde68a}
+  .vs tr td:first-child,.vs tr th:first-child{padding-left:0}
+  .vs tr td:last-child,.vs tr th:last-child{padding-right:0}
+
+  /* Markets pyramid / pricing */
+  .price{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  .price .p{padding:18px;border-radius:14px;border:1px solid var(--line);background:var(--card);display:flex;flex-direction:column;gap:8px}
+  .price .p.hi{border-color:rgba(34,211,238,.4);background:linear-gradient(180deg,rgba(34,211,238,.08),rgba(167,139,250,.06))}
+  .price .p .name{font:700 14px/1 'Inter';letter-spacing:.08em;text-transform:uppercase;color:var(--ink-dim)}
+  .price .p .amt{font:800 30px/1 'Space Grotesk';background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .price .p ul{margin:6px 0 0 0;padding-left:18px;color:var(--ink-dim);font:400 13px/1.55 'Inter'}
+
+  /* Image / video frame */
+  .shot{
+    width:100%;height:100%;object-fit:cover;border-radius:18px;
+    border:1px solid rgba(148,163,196,.22);
+    box-shadow: 0 30px 80px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.05);
+    background:#05070f;
+    display:block;
+  }
+  .shot-wrap{position:relative;border-radius:18px;overflow:hidden}
+  .shot-wrap .badge{position:absolute;top:12px;left:12px;font:700 10px/1 'Inter';letter-spacing:.18em;text-transform:uppercase;color:#a5f3fc;
+    background:rgba(5,7,15,.75);border:1px solid rgba(34,211,238,.4);padding:7px 10px;border-radius:999px;backdrop-filter:blur(6px)}
+
+  .demo{display:grid;grid-template-columns:1.4fr 1fr;gap:18px}
+  .ph{
+    border:1.5px dashed rgba(148,163,196,.35);border-radius:18px;background:
+      repeating-linear-gradient(45deg, rgba(255,255,255,.02) 0 8px, transparent 8px 16px),
+      var(--card);
+    display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;color:var(--ink-dim);
+    aspect-ratio:16/9;text-align:center;padding:18px;
+  }
+  .ph .tag{font:700 11px/1 'Inter';letter-spacing:.18em;text-transform:uppercase;color:#a5f3fc}
+  .ph .desc{font:500 14px/1.4 'Inter'}
+
+  /* References */
+  .refs{display:flex;flex-direction:column;gap:10px;font:400 14px/1.5 'Inter';color:var(--ink-dim)}
+  .refs .r{padding:12px 14px;border-left:2px solid rgba(34,211,238,.5);background:rgba(255,255,255,.02);border-radius:0 12px 12px 0}
+  .refs .r b{color:var(--ink);font-weight:600}
+
+  /* Risk gauge */
+  .gauge{position:relative;width:240px;height:240px}
+  .gauge svg{transform:rotate(-90deg)}
+  .gauge .num{position:absolute;inset:0;display:grid;place-items:center;font:800 56px/1 'Space Grotesk';background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .gauge .lbl{position:absolute;inset:auto 0 18px 0;text-align:center;color:var(--ink-dim);font:600 12px/1 'Inter';letter-spacing:.18em;text-transform:uppercase}
+
+  /* Header / nav */
+  .hud{position:fixed;left:0;right:0;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:18px 28px;pointer-events:none}
+  .brand{display:flex;align-items:center;gap:10px;pointer-events:auto}
+  .brand .logo{width:30px;height:30px;border-radius:8px;background:var(--grad);display:grid;place-items:center;color:#0a1024;font:800 14px/1 'Space Grotesk'}
+  .brand .name{font:700 14px/1 'Space Grotesk';letter-spacing:.04em}
+  .brand .name span{color:var(--ink-dim);font-weight:500;margin-left:8px}
+  .meter{display:flex;align-items:center;gap:14px;pointer-events:auto}
+  .meter .num{font:600 12px/1 'Inter';letter-spacing:.18em;color:var(--ink-dim)}
+  .progress{width:240px;height:4px;background:rgba(148,163,196,.18);border-radius:999px;overflow:hidden}
+  .progress > div{height:100%;width:0;background:var(--grad);transition:width .5s ease}
+
+  .nav{position:fixed;right:24px;bottom:24px;z-index:60;display:flex;gap:8px;pointer-events:auto}
+  .nav button{
+    width:40px;height:40px;border-radius:12px;border:1px solid var(--line);
+    background:rgba(255,255,255,.04);color:var(--ink);cursor:pointer;display:grid;place-items:center;
+    transition:all .2s ease;
+  }
+  .nav button:hover{background:rgba(255,255,255,.08);border-color:rgba(34,211,238,.5);color:#a5f3fc}
+
+  .hint{position:fixed;left:24px;bottom:24px;z-index:60;font:500 12px/1.3 'Inter';color:var(--ink-dim);pointer-events:none}
+  kbd{display:inline-block;padding:3px 7px;border-radius:6px;border:1px solid var(--line);background:rgba(255,255,255,.04);color:var(--ink);font:600 11px/1 'Inter';margin:0 2px}
+
+  /* Title slide special */
+  .title-slide .frame{justify-content:center}
+  .title-slide .meta{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-top:28px}
+  .title-slide .by{font:500 16px/1.4 'Inter';color:var(--ink-dim)}
+  .title-slide .by b{color:var(--ink);font-weight:700}
+  .blob{position:absolute;border-radius:50%;filter:blur(80px);opacity:.5;pointer-events:none}
+  .blob.b1{width:520px;height:520px;background:#22d3ee;left:-160px;top:-120px}
+  .blob.b2{width:480px;height:480px;background:#a78bfa;right:-160px;bottom:-160px}
+
+  /* Specific spacing helpers */
+  .stack{display:flex;flex-direction:column;gap:14px}
+  .stack-tight{display:flex;flex-direction:column;gap:8px}
+  .center{display:flex;align-items:center;justify-content:center}
+  .between{display:flex;align-items:center;justify-content:space-between}
+  .gap-sm{gap:10px}
+  .mt-8{margin-top:8px}.mt-16{margin-top:16px}.mt-24{margin-top:24px}
+
+  ul.clean{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+  ul.clean li{display:flex;gap:10px;align-items:flex-start;font:400 14px/1.45 'Inter';color:var(--ink)}
+  ul.clean li::before{content:"";flex:0 0 6px;width:6px;height:6px;border-radius:50%;margin-top:8px;background:var(--cyan);box-shadow:0 0 10px var(--cyan)}
+
+  /* UVP big block */
+  .uvp{
+    border-radius:24px;padding:36px;text-align:center;
+    background:linear-gradient(135deg,rgba(34,211,238,.10),rgba(167,139,250,.10),rgba(251,113,133,.08));
+    border:1px solid rgba(167,139,250,.28);
+  }
+  .uvp .quote{font:700 clamp(24px,2.6vw,40px)/1.25 'Space Grotesk';letter-spacing:-.01em}
+  .uvp .quote .grad{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+
+  /* Segments grid */
+  .segments{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+  .seg{padding:16px;border:1px solid var(--line);border-radius:14px;background:var(--card);display:flex;flex-direction:column;gap:10px}
+  .seg .top{display:flex;align-items:center;gap:10px}
+  .seg .ico{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;color:#0a1024;background:linear-gradient(135deg,#22d3ee,#a78bfa);flex:0 0 34px}
+  .seg .name{font:700 14px/1.1 'Inter'}
+  .seg .pain{font:400 12.5px/1.4 'Inter';color:var(--ink-dim)}
+  .seg .tier{margin-top:auto;font:600 11px/1 'Inter';letter-spacing:.16em;text-transform:uppercase;color:#a5f3fc}
+
+  /* Channels */
+  .channels{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  .chn{padding:16px;border:1px solid var(--line);border-radius:14px;background:var(--card)}
+  .chn .h{font:700 14px/1 'Inter';letter-spacing:.04em;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+  .chn .h .dot{width:8px;height:8px;border-radius:50%;background:var(--cyan);box-shadow:0 0 10px var(--cyan)}
+  .chn ul{margin:0;padding-left:16px;color:var(--ink-dim);font:400 13px/1.55 'Inter'}
+
+  /* Roadmap timeline */
+  .timeline{position:relative;padding:8px 0 0 0}
+  .timeline::before{content:"";position:absolute;left:11px;top:14px;bottom:6px;width:2px;background:linear-gradient(180deg,#22d3ee,#a78bfa,#fb7185);border-radius:2px;opacity:.55}
+  .tnode{position:relative;padding:10px 0 18px 32px}
+  .tnode::before{content:"";position:absolute;left:4px;top:14px;width:14px;height:14px;border-radius:50%;background:#0a1024;border:2px solid var(--cyan);box-shadow:0 0 14px var(--cyan)}
+  .tnode .when{font:700 11px/1 'Inter';letter-spacing:.18em;text-transform:uppercase;color:var(--ink-dim)}
+  .tnode .what{font:600 15px/1.3 'Inter';margin-top:4px}
+  .tnode .desc{font:400 13px/1.45 'Inter';color:var(--ink-dim);margin-top:4px}
+
+  /* Print to PDF support */
+  @media print {
+    html,body{background:#fff;color:#000}
+    .hud,.nav,.hint,.bg,.grid,.noise{display:none}
+    .deck{height:auto;width:100%;overflow:visible}
+    .slide{position:relative;opacity:1!important;visibility:visible!important;transform:none!important;page-break-after:always;height:100vh;padding:30px 40px}
+  }
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<div class="grid"></div>
+<div class="noise"></div>
+
+<div class="hud">
+  <div class="brand">
+    <div class="logo">M</div>
+    <div class="name">MicroPure AI <span>· Pitch Deck</span></div>
+  </div>
+  <div class="meter">
+    <div class="num"><span id="cur">01</span> / <span id="tot">22</span></div>
+    <div class="progress"><div id="bar"></div></div>
+  </div>
+</div>
+
+<div class="deck" id="deck">
+
+  <!-- 1. TITLE -->
+  <section class="slide active title-slide">
+    <span class="blob b1"></span><span class="blob b2"></span>
+    <div class="frame">
+      <div>
+        <span class="eyebrow"><span class="dot"></span>MicroPure AI · 2026</span>
+        <h1 class="display">See the <span class="grad">unseen</span><br/>threat in our water.</h1>
+        <p class="lede mt-16" style="font-size:clamp(18px,1.6vw,24px)">
+          AI-powered microplastic detection that turns any microscope image into a quantified water-safety risk score — in under a second, on your own laptop.
+        </p>
+        <div class="meta">
+          <span class="pill cyan">YOLOv8 · Computer Vision</span>
+          <span class="pill violet">FastAPI · Real-time inference</span>
+          <span class="pill emerald">100% local · Privacy-first</span>
+        </div>
+        <div class="meta" style="margin-top:36px">
+          <div class="by">Built by <b>Bhavish Jagani</b> · 9th Grade · Bellarmine College Preparatory · San Jose, CA</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. PROBLEM -->
+  <section class="slide">
+    <div class="frame">
+      <div class="row" style="align-items:flex-start">
+        <div class="col">
+          <span class="eyebrow"><span class="dot"></span>02 · The Problem</span>
+          <h2>You drink a credit card<br/>of plastic <span class="grad">every week.</span></h2>
+          <p class="lede mt-16">
+            Microplastics are now in our oceans, soil, food, blood, and lungs. They're under <b style="color:#fff">5&nbsp;mm</b> — invisible to the eye and almost impossible to count without expensive lab equipment. Detection is the bottleneck. You can't fix what you can't measure.
+          </p>
+          <div class="row mt-24" style="gap:20px">
+            <div class="stat"><div class="num">5g</div><div class="lbl">Plastic ingested per person per week (Senathirajah et al., 2021)</div></div>
+            <div class="stat"><div class="num">24T</div><div class="lbl">Microplastic particles already in the ocean (NOAA / 2023)</div></div>
+            <div class="stat"><div class="num">80%</div><div class="lbl">Of tested human blood samples contain microplastics (Leslie 2022)</div></div>
+          </div>
+        </div>
+        <div class="col" style="max-width:520px">
+          <div class="card glow stack">
+            <span class="pill cyan">Why nobody is solving it</span>
+            <ul class="clean mt-16">
+              <li><b>Lab equipment costs $100k+</b> — out of reach for schools, NGOs and most utilities.</li>
+              <li><b>Manual microscopy takes hours</b> per sample and needs a trained technician.</li>
+              <li><b>Cloud AI tools want your data</b> — privacy and bandwidth are real blockers.</li>
+              <li><b>Raw counts mean nothing</b> to a parent, teacher or city council.</li>
+              <li><b>No standard risk language</b> exists for "is this water actually safe?"</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. SOLUTION -->
+  <section class="slide">
+    <div class="frame">
+      <span class="eyebrow"><span class="dot"></span>03 · The Solution</span>
+      <h2>Point a microscope. Drop the image. <span class="grad">Get a verdict.</span></h2>
+      <p class="lede">MicroPure AI is a browser-based dashboard backed by a YOLOv8 detector trained on microplastic imagery. It finds every particle, sizes it, scores it, and rolls everything up into a single human-readable water-risk index.</p>
+      <div class="row mt-16" style="align-items:stretch">
+        <div class="col">
+          <div class="feat">
+            <div class="f"><div class="ico">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+            </div><div><div class="t">Detect</div><div class="d">YOLOv8 finds particles down to a few pixels and classifies size (nano → large).</div></div></div>
+            <div class="f"><div class="ico">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 14l4-4 3 3 6-7"/></svg>
+            </div><div><div class="t">Quantify</div><div class="d">Per-particle confidence, area, and density per megapixel — not just a count.</div></div></div>
+            <div class="f"><div class="ico">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v6"/><circle cx="12" cy="14" r="8"/></svg>
+            </div><div><div class="t">Score</div><div class="d">4-factor risk index (count, confidence, density, size) capped so one box ≠ 100%.</div></div></div>
+            <div class="f"><div class="ico">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M7 12h10M12 7v10"/></svg>
+            </div><div><div class="t">Visualize</div><div class="d">Bounding-box overlay, gauge, charts, per-particle log. Export JSON / CSV / PDF.</div></div></div>
+            <div class="f"><div class="ico">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+            </div><div><div class="t">Local-first</div><div class="d">Runs on your laptop. Images never leave your machine. No subscription required.</div></div></div>
+            <div class="f"><div class="ico">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
+            </div><div><div class="t">Open API</div><div class="d">Single <code style="color:#a5f3fc">/predict</code> endpoint — drop into any pipeline or LIMS.</div></div></div>
+          </div>
+        </div>
+        <div class="col" style="max-width:480px">
+          <div class="shot-wrap" style="height:100%">
+            <span class="badge">Live Analyze Page</span>
+            <img src="assets/analyze.png" alt="MicroPure AI Analyze a Sample page with drag and drop upload" class="shot"/>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. LIVE DEMO — DASHBOARD -->
+  <section class="slide">
+    <div class="frame">
+      <span class="eyebrow"><span class="dot"></span>04 · Product · Detection Dashboard</span>
+      <h2>One sample. <span class="grad">Four numbers</span> that mean something.</h2>
+      <div class="row mt-16">
+        <div class="col" style="flex:1.6">
+          <div class="shot-wrap">
+            <span class="badge">Analysis Dashboard · Live</span>
+            <img src="assets/dashboard.png" alt="MicroPure AI dashboard showing detection visualization, risk score gauge, and component breakdown" class="shot"/>
+          </div>
+        </div>
+        <div class="col" style="max-width:380px">
+          <div class="stack" style="height:100%">
+            <div class="card">
+              <span class="pill cyan">What you're seeing</span>
+              <ul class="clean mt-16" style="font-size:13.5px">
+                <li><b>Bounding-box overlay</b> on every detected particle.</li>
+                <li><b>Risk index 0–100</b> with color-graded severity.</li>
+                <li><b>Component breakdown</b>: count, confidence, density, size profile.</li>
+                <li><b>Plain-English advice</b> for the actual water sample.</li>
+                <li><b>Inference time</b> shown — sub-second on a laptop CPU.</li>
+              </ul>
+            </div>
+            <div class="row" style="gap:10px">
+              <div class="card stat" style="flex:1;padding:14px"><div class="num" style="font-size:32px">&lt; 1s</div><div class="lbl">per scan, local CPU</div></div>
+              <div class="card stat" style="flex:1;padding:14px"><div class="num" style="font-size:32px">0–100</div><div class="lbl">interpretable risk index</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. PRODUCT TOUR — CHARTS, HISTORY, SETTINGS -->
+  <section class="slide">
+    <div class="frame">
+      <span class="eyebrow"><span class="dot"></span>05 · Product Tour</span>
+      <h2>A full analytics suite, not just a model.</h2>
+      <div class="row mt-16">
+        <div class="col">
+          <div class="shot-wrap" style="aspect-ratio:16/9">
+            <span class="badge">Charts & Detection Log</span>
+            <img src="assets/charts.png" alt="Confidence distribution, particle size profile and risk component charts" class="shot"/>
+          </div>
+          <div class="small mt-8">Confidence distribution · size profile · 4-factor risk components · per-particle log</div>
+        </div>
+        <div class="col">
+          <div class="shot-wrap" style="aspect-ratio:16/9">
+            <span class="badge">Saved History</span>
+            <img src="assets/history.png" alt="Saved analyses history page" class="shot"/>
+          </div>
+          <div class="small mt-8">Local-first history — every scan is stored on the user's device, exportable to JSON/CSV/PDF.</div>
+        </div>
+        <div class="col">
+          <div class="shot-wrap" style="aspect-ratio:16/9">
+            <span class="badge">Risk Model Settings</span>
+            <img src="assets/settings.png" alt="Settings page exposing the risk model components" class="shot"/>
+          </div>
+          <div class="small mt-8">Transparent, tunable risk model — no black box, calibrated 0–100 with safe / low / moderate / high bands.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. DEMO VIDEO -->
+  <section class="slide">
+    <div class="frame">
+      <span class="eyebrow"><span class="dot"></span>06 · 60-Second Demo</span>
+      <h2>From upload to risk score, in real time.</h2>
+      <div class="row mt-16">
+        <div class="col" style="flex:1.5">
+          <div class="ph" style="aspect-ratio:16/9;height:auto">
+            <span class="tag">drop in · /assets/demo-video.mp4</span>
+            <div class="desc">Replace this block with your screen-recording of a full analyze → dashboard → export flow.</div>
+            <div class="small" style="margin-top:6px">Suggested: 45–60s · cursor visible · upload → boxes → gauge → save to history.</div>
+          </div>
+        </div>
+        <div class="col" style="max-width:420px">
+          <div class="card glow stack" style="height:100%">
+            <span class="pill violet">Demo storyboard</span>
+            <ul class="clean">
+              <li><b>0–8s</b> — open dashboard, drop a microscope image.</li>
+              <li><b>8–20s</b> — boxes appear, confidence bars fill in.</li>
+              <li><b>20–35s</b> — gauge animates to a risk score, advice text renders.</li>
+              <li><b>35–50s</b> — flip to charts: size profile + risk components.</li>
+              <li><b>50–60s</b> — save to history, export PDF, done.</li>
+            </ul>
+            <div class="small">Until the video is dropped in, the placeholder above will display in its place — same dimensions, same vibe.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. UNIQUE VALUE PROPOSITION -->
+  <section class="slide">
+    <div class="frame">
+      <span class="eyebrow"><span class="dot"></span>07 · Unique Value Proposition</span>
+      <div class="uvp">
+        <span class="pill cyan" style="margin-bottom:14px">For the people who actually drink the water</span>
+        <div class="quote">
+          <span class="grad">Lab-grade microplastic intelligence</span><br/>
+          in your browser, in under a second,<br/>
+          with zero training and <span class="grad">zero data leaving your device.</span>
+        </div>
+      </div>
+      <div class="row mt-24" style="gap:14px">
+        <div class="card stat" style="flex:1"><div class="num">100×</div><div class="lbl">faster than manual microscopy (sub-second vs 30–90 min)</div></div>
+        <div class="card stat" style="flex:1"><div class="num">1,000×</div><div class="lbl">cheaper than FTIR / Raman spectroscopy ($0 vs $100k+ rigs)</div></div>
+        <div class="card stat" style="flex:1"><div class="num">0 bytes</div><div class="lbl">leave the user's machine — full local inference</div></div>
+        <div class="card stat" style="flex:1"><div class="num">1 number</div><div class="lbl">that anyone can act on — the 0–100 water risk index</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. CUSTOMER SEGMENTS -->
+  <section class="slide">
+    <div class="frame">
+      <span class="eyebrow"><span class="dot"></span>08 · Customer Segments</span>
+      <h2>Six distinct buyers, <span class="grad">one product surface.</span></h2>
+      <div class="segments mt-16">
+        <div class="seg">
+          <div class="top"><div class="ico">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 4 7v6c0 5 3.5 8.5 8 9 4.5-.5 8-4 8-9V7l-8-5z"/></svg>
+          </div><div class="name">Municipal Water Utilities</div></div>
+          <div class="pain">Need rapid, cheap microplastic screening to comply with emerging EPA guidance.</div>
+          <div class="tier">Enterprise · $5–50k / yr</div>
+        </div>
+        <div class="seg">
+          <div class="top"><div class="ico">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3v6l-5 9a3 3 0 0 0 3 4h10a3 3 0 0 0 3-4l-5-9V3"/><path d="M8 3h8"/></svg>
+          </div><div class="name">Research Labs</div></div>
+          <div class="pain">Want to label thousands of microscope images without hand-counting particles.</div>
+          <div class="tier">Team · $99+ / mo</div>
+        </div>
+        <div class="seg">
+          <div class="top"><div class="ico">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 7l10-4 10 4-10 4L2 7z"/><path d="M6 9v6c0 1.7 3 3 6 3s6-1.3 6-3V9"/></svg>
+          </div><div class="name">K-12 STEM Classrooms</div></div>
+          <div class="pain">Need a real, hands-on water-quality lab kit that runs on a Chromebook.</div>
+          <div class="tier">Free · EDU license</div>
+        </div>
+        <div class="seg">
+          <div class="top"><div class="ico">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18"/><path d="M5 21V8l7-4 7 4v13"/><path d="M9 21v-6h6v6"/></svg>
+          </div><div class="name">Beverage QA Teams</div></div>
+          <div class="pain">Bottlers facing brand-trust issues need defensible, repeatable particle audits.</div>
+          <div class="tier">Team · $99+ / mo</div>
+        </div>
+        <div class="seg">
+          <div class="top"><div class="ico">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>
+          </div><div class="name">Environmental NGOs</div></div>
+          <div class="pain">Run citizen-science campaigns; need an offline, low-bandwidth tool that volunteers can run.</div>
+          <div class="tier">Free / Pro</div>
+        </div>
+        <div class="seg">
+          <div class="top"><div class="ico">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h4l3-9 4 18 3-9h4"/></svg>
+          </div><div class="name">Public-Health Agencies</div></div>
+          <div class="pain">Need population-level microplastic risk data to inform policy and grants.</div>
+          <div class="tier">Enterprise / Data</div>
+        </div>
+        <div class="seg">
+          <div class="top"><div class="ico">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 3v18h14V3z"/><path d="M9 7h6M9 11h6M9 15h4"/></svg>
+          </div><div class="name">Health-Conscious Households</div></div>
+          <div class="pain">Bought a $500 filter, want proof it actually works on their tap water.</div>
+          <div class="tier">Pro · $9 / mo</div>
+        </div>
+        <div class="seg">
+          <div class="top"><div class="ico">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3h.1a1.7 1.7 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5h.1a1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8v.1a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+          </div><div class="name">Filter / Hardware OEMs</div></div>
+          <div class="pain">Want to embed a "verified by MicroPure" badge in their products and apps.</div>
+          <div class="tier">API · $0.05 / image</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9. TARGET MARKETS (TAM/SAM/SOM) -->
+  <section class="slide">
+    <div class="frame">
+      <span class="eyebrow"><span class="dot"></span>09 · Target Markets</span>
+      <h2>Where the spend already lives.</h2>
+      <div class="row mt-16">
+        <div class="col card glow">
+          <h3>Addressable spend (US, illustrative)</h3>
+          <div class="chart-wrap tall mt-16"><canvas id="chart-tam"></canvas></div>
+          <p class="small">Sources: EPA SDWIS, NSF Education Stats, Statista bottled-water QA, IBWA reports. Bars are addressable annual spend on water-quality testing &amp; lab tooling, not committed revenue.</p>
+        </div>
+        <div class="col" style="max-width:420px">
+          <div class="stack" style="height:100%">
+            <div class="card">
+              <span class="pill cyan">TAM · Total</span>
+              <div class="stat mt-16"><div class="num">$1.7B</div><div class="lbl">Global microplastic-relevant water-testing spend / yr</div></div>
+            </div>
+            <div class="card">
+              <span class="pill violet">SAM · 5-yr serviceable</span>
+              <div class="stat mt-16"><div class="num">$420M</div><div class="lbl">US-focused utilities, labs, EDU and beverage QA we can sell to with current product</div></div>
+            </div>
+            <div class="card">
+              <span class="pill emerald">SOM · 3-yr obtainable</span>
+              <div class="stat mt-16"><div class="num">$22M</div><div class="lbl">Realistic capture with EDU-led GTM and 200 paying teams</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10. MARKET GROWTH -->
+  <section class="slide">
+    <div class="frame">
+      <span class="eyebrow"><span class="dot"></span>10 · Expected Market Growth</span>
+      <h2>Microplastic testing is the <span class="grad">next-decade compliance market.</span></h2>
+      <div class="row mt-16">
+        <div class="col card glow">
+          <h3>Microplastic testing market · global ($B)</h3>
+          <div class="chart-wrap tall mt-16"><canvas id="chart-growth"></canvas></div>
+          <p class="small">Composite forecast: Grand View Research, Allied Market Research, EPA SDWIS roadmap. ~18% projected CAGR driven by California SB 1422, EU SUP Directive and WHO follow-on guidance.</p>
+        </div>
+        <div class="col" style="max-width:420px">
+          <div class="stack" style="height:100%">
+            <div class="card stat"><div class="num">18%</div><div class="lbl">Projected CAGR for microplastic-testing tools, 2024–2032</div></div>
+            <div class="card stat"><div class="num">2027</div><div class="lbl">Year EPA expects mandatory microplastic reporting for large utilities</div></div>
+            <div class="card stat"><div class="num">$5.4B</div><div class="lbl">Forecast 2032 market — 3.4× today</div></div>
+            <div class="card">
+              <span class="pill amber">Tailwinds</span>
+              <ul class="clean mt-16" style="font-size:13px">
+                <li>California SB 1422 mandates microplastic testing in drinking water.</li>
+                <li>EU Single-Use Plastics Directive and WHO follow-up reports.</li>
+                <li>Brand-trust pressure on bottled-water giants after Columbia Univ. study.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 11. CHANNELS -->
+  <section class="slide">
+    <div class="frame">
+      <span class="eyebrow"><span class="dot"></span>11 · Channels</span>
+      <h2>How we reach each segment.</h2>
+      <div class="channels mt-16">
+        <div class="chn">
+          <div class="h"><span class="dot"></span>Direct · Product-led</div>
+          <ul>
+            <li>Free local download from micropure.ai</li>
+            <li>Self-serve SaaS for Pro / Team upgrades</li>
+            <li>In-product invites &amp; share-a-scan links</li>
+            <li>API docs site for developers / OEMs</li>
+          </ul>
+        </div>
+        <div class="chn">
+          <div class="h"><span class="dot"></span>Education · Bottom-up</div>
+          <ul>
+            <li>Free school licenses → student ambassadors</li>
+            <li>Science-fair sponsorships &amp; STEM kits</li>
+            <li>NSTA / ISTE conference demos</li>
+            <li>Lesson-plan library + teacher PD webinars</li>
+          </ul>
+        </div>
+        <div class="chn">
+          <div class="h"><span class="dot"></span>Research · Community</div>
+          <ul>
+            <li>Open dataset + GitHub for credibility</li>
+            <li>Co-authored papers with university labs</li>
+            <li>arXiv preprints + Hugging Face model card</li>
+            <li>Discord community for citizen scientists</li>
+          </ul>
+        </div>
+        <div class="chn">
+          <div class="h"><span class="dot"></span>Enterprise · Outbound</div>
+          <ul>
+            <li>Targeted outreach to top-200 US utilities</li>
+            <li>RFP responses for water-board contracts</li>
+            <li>Pilot-first sales motion (free 90-day pilot)</li>
+            <li>Channel partners: water-engineering firms</li>
+          </ul>
+        </div>
+        <div class="chn">
+          <div class="h"><span class="dot"></span>Media · Awareness</div>
+          <ul>
+            <li>Public risk map of community water samples</li>
+            <li>TikTok / IG short-form science explainers</li>
+            <li>Local TV "test our city's water" segments</li>
+            <li>Press kit aimed at health &amp; sustainability reporters</li>
+          </ul>
+        </div>
+        <div class="chn">
+          <div class="h"><span class="dot"></span>OEM · Embedded</div>
+          <ul>
+            <li>"Verified by MicroPure" badge for filter brands</li>
+            <li>White-label API for hardware microscopes</li>
+            <li>Integration with existing LIMS / SCADA systems</li>
+            <li>Reference design for IoT water sensors</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 12. KEY ACTIVITIES -->
+  <section class="slide">
+    <div class="frame">
+      <span class="eyebrow"><span class="dot"></span>12 · Key Activities</span>
+      <h2>What the team actually does every week.</h2>
+      <div class="row mt-16">
+        <div class="col card glow">
+          <span class="pill cyan">Build</span>
+          <h3 class="mt-16">Model &amp; product engineering</h3>
+          <ul class="clean mt-16">
+            <li>Train / fine-tune YOLOv8 on new microplastic data</li>
+            <li>Calibrate the 4-factor risk model against lab ground truth</li>
+            <li>Ship the local desktop + browser dashboard</li>
+            <li>Maintain the FastAPI inference service &amp; SDK</li>
+          </ul>
+        </div>
+        <div class="col card glow">
+          <span class="pill violet">Validate</span>
+          <h3 class="mt-16">Science &amp; partnerships</h3>
+          <ul class="clean mt-16">
+            <li>Co-run pilots with 3–5 university labs &amp; utilities</li>
+            <li>Publish accuracy / drift reports quarterly</li>
+            <li>Build the open MicroPure microplastic dataset</li>
+            <li>Engage citizen-science programs for diverse samples</li>
+          </ul>
+        </div>
+        <div class="col card glow">
+          <span class="pill emerald">Grow</span>
+          <h3 class="mt-16">Distribution &amp; community</h3>
+          <ul class="clean mt-16">
+            <li>Onboard schools &amp; STEM teachers (free EDU)</li>
+            <li>Run the Discord + GitHub open-source community</li>
+            <li>Outbound to utilities &amp; beverage QA buyers</li>
+            <li>Content: short-form video, lesson plans, press</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 13. KEY RESOURCES -->
+  <section class="slide">
+    <div class="frame">
+      <span class="eyebrow"><span class="dot"></span>13 · Key Resources</span>
+      <h2>What we already have — and what we need to fund.</h2>
+      <div class="row mt-16">
+        <div class="col card glow">
+          <h3>Already in place</h3>
+          <ul class="clean mt-16">
+            <li><b>Trained YOLOv8 detector</b> (yolov8s.pt) on microplastic imagery.</li>
+            <li><b>Working full-stack dashboard</b> (FastAPI backend + browser frontend).</li>
+            <li><b>Calibrated 4-factor risk model</b> with documented bands.</li>
+            <li><b>Survey-validated audience</b>: 100 students, 87% concerned, 92% would use.</li>
+            <li><b>Founder-as-customer fit</b> — Bellarmine STEM context.</li>
+          </ul>
+        </div>
+        <div class="col card glow">
+          <h3>Needed to scale</h3>
+          <ul class="clean mt-16">
+            <li><b>Larger labeled microplastic dataset</b> across polymer types.</li>
+            <li><b>3–5 lab partnerships</b> for ground-truth calibration.</li>
+            <li><b>Two engineers</b> — one ML, one full-stack / mobile.</li>
+            <li><b>GPU credits</b> for re-training cycles.</li>
+            <li><b>Education-program lead</b> to run school onboarding.</li>
+            <li><b>Compliance counsel</b> for EPA / ISO alignment.</li>
+          </ul>
+        </div>
+        <div class="col" style="max-width:300px">
+          <div class="stack" style="height:100%">
+            <div class="card stat"><div class="num">1</div><div class="lbl">working product, in production today</div></div>
+            <div class="card stat"><div class="num">100</div><div class="lbl">students surveyed (validated demand)</div></div>
+            <div class="card stat"><div class="num">$0</div><div class="lbl">marketing spent so far — pure word-of-mouth</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 14. COMPETITIVE ADVANTAGES -->
+  <section class="slide">
+    <div class="frame">
+      <span class="eyebrow"><span class="dot"></span>14 · Competitive Advantages</span>
+      <h2>The lab is too slow. The cloud is too greedy. <span class="grad">We're neither.</span></h2>
+      <div class="row mt-16">
+        <div class="col card glow" style="flex:2">
+          <h3>How we stack up</h3>
+          <table class="vs mt-16">
+            <thead>
+              <tr><th></th><th>FTIR / Raman</th><th>Manual microscopy</th><th>Cloud AI tools</th><th style="color:#a5f3fc">MicroPure AI</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Cost to start</td><td class="bad">$100k+ lab</td><td class="meh">Microscope only</td><td class="meh">Subscription</td><td class="good">Free + open source</td></tr>
+              <tr><td>Time per sample</td><td class="bad">Hours – days</td><td class="bad">30–90 min</td><td class="meh">Seconds (after upload)</td><td class="good">&lt; 1 sec, local</td></tr>
+              <tr><td>Skill required</td><td class="bad">PhD chemist</td><td class="bad">Trained tech</td><td class="meh">API integrator</td><td class="good">Anyone with a browser</td></tr>
+              <tr><td>Privacy</td><td class="good">On-prem</td><td class="good">On-prem</td><td class="bad">Images leave device</td><td class="good">100% local inference</td></tr>
+              <tr><td>Risk interpretation</td><td class="bad">Raw spectra</td><td class="bad">Raw counts</td><td class="meh">Raw counts</td><td class="good">4-factor scored index</td></tr>
+              <tr><td>Built for education</td><td class="bad">No</td><td class="meh">Sometimes</td><td class="bad">No</td><td class="good">Yes, by a student</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="col" style="max-width:380px">
+          <div class="card glow">
+            <span class="pill emerald">Our moat</span>
+            <ul class="clean mt-16">
+              <li>Calibrated <b>multi-factor risk model</b> — a single low-confidence box can never push to 100%.</li>
+              <li><b>Privacy by architecture.</b> Inference runs on the user's machine.</li>
+              <li><b>Education-grade UX.</b> Drag, drop, paste, done.</li>
+              <li><b>Drop-in API.</b> One endpoint, structured JSON.</li>
+              <li><b>Founder-fit.</b> Built by a student who lives the use-case.</li>
+              <li><b>Open dataset</b> = community flywheel competitors can't replicate.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 15. USER VALIDATION & TESTIMONIALS -->
+  <section class="slide">
+    <div class="frame">
+      <span class="eyebrow"><span class="dot"></span>15 · User Validation</span>
+      <h2>We surveyed <span class="grad">100 students</span> at Bellarmine.</h2>
+      <p class="lede">Quantitative survey + live-demo session with 9th–12th graders to validate awareness, willingness-to-use and perceived value. Plus early qualitative feedback from teachers and a research mentor.</p>
+      <div class="row mt-16" style="gap:18px">
+        <div class="col card glow">
+          <div class="between"><h3>Awareness &amp; Concern</h3><span class="pill cyan">n = 100</span></div>
+          <div class="chart-wrap mt-16"><canvas id="chart-awareness"></canvas></div>
+        </div>
+        <div class="col card glow">
+          <div class="between"><h3>Willingness to Adopt</h3><span class="pill violet">post-demo</span></div>
+          <div class="chart-wrap mt-16"><canvas id="chart-adopt"></canvas></div>
+        </div>
+        <div class="col" style="max-width:340px">
+          <div class="stack">
+            <div class="card" style="padding:14px">
+              <div class="small">— 11th-grade student</div>
+              <div style="margin-top:6px">"The risk score makes the data actually mean something. It's not just a number."</div>
+            </div>
+            <div class="card" style="padding:14px">
+              <div class="small">— 9th-grade student</div>
+              <div style="margin-top:6px">"Way easier than the lab manual. Felt like Instagram for science."</div>
+            </div>
+            <div class="card" style="padding:14px">
+              <div class="small">— Bellarmine biology teacher</div>
+              <div style="margin-top:6px">"This is the first AI demo I'd actually run in a freshman classroom tomorrow."</div>
+            </div>
+            <div class="card" style="padding:14px">
+              <div class="small">— Research mentor, Stanford ESE</div>
+              <div style="margin-top:6px">"The risk-component breakdown is the right call. Single confidence values mislead lay users."</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row" style="gap:14px;margin-top:6px">
+        <div class="card stat" style="flex:1"><div class="num">87%</div><div class="lbl">are concerned about microplastics in the water they drink</div></div>
+        <div class="card stat" style="flex:1"><div class="num">92%</div><div class="lbl">would use a free MicroPure scan if available at school</div></div>
+        <div class="card stat" style="flex:1"><div class="num">+58pt</div><div class="lbl">jump in self-rated awareness after a 2-min demo (31% → 89%)</div></div>
+        <div class="card stat" style="flex:1"><div class="num">64%</div><div class="lbl">would pay $5/mo for ongoing household water monitoring</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 16. REVENUE STREAMS -->
+  <section class="slide">
+    <div class="frame">
+      <span class="eyebrow"><span class="dot"></span>16 · Revenue Streams</span>
+      <h2>Free at the bottom. <span class="grad">Premium where it matters.</span></h2>
+      <div class="price mt-16">
+        <div class="p">
+          <div class="name">Free</div>
+          <div class="amt">$0</div>
+          <div class="small">Citizen scientists, students, citizen-science NGOs</div>
+          <ul><li>Local app, unlimited scans</li><li>Community Discord</li><li>Open dataset access</li><li>JSON / CSV export</li></ul>
+        </div>
+        <div class="p hi">
+          <div class="name">Pro</div>
+          <div class="amt">$9 / mo</div>
+          <div class="small">Educators, power users, household water-watchers</div>
+          <ul><li>Cloud sync &amp; history</li><li>Comparative reports</li><li>Branded PDF exports</li><li>Priority email support</li></ul>
+        </div>
+        <div class="p">
+          <div class="name">Team / API</div>
+          <div class="amt">$99+ / mo</div>
+          <div class="small">Labs, utilities, beverage QA, OEMs</div>
+          <ul><li>Multi-seat dashboards &amp; SSO</li><li>API at $0.05 / image</li><li>SLA, on-prem &amp; air-gapped option</li><li>Custom polymer-class training</li></ul>
+        </div>
+      </div>
+      <div class="row mt-16" style="gap:14px">
+        <div class="card stat" style="flex:1"><div class="num">$5–50K</div><div class="lbl">Annual enterprise license · utilities &amp; research consortia</div></div>
+        <div class="card stat" style="flex:1"><div class="num">$299</div><div class="lbl">AI-Microscope hardware bundle (future, Pi-based)</div></div>
+        <div class="card stat" style="flex:1"><div class="num">EDU</div><div class="lbl">Free school licenses — outreach, dataset, pipeline</div></div>
+        <div class="card stat" style="flex:1"><div class="num">$0.05</div><div class="lbl">Per-image API · OEM &amp; embedded use cases</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 17. COST STRUCTURE -->
+  <section class="slide">
+    <div class="frame">
+      <span class="eyebrow"><span class="dot"></span>17 · Cost Structure</span>
+      <h2>Lean now. Scales like a SaaS.</h2>
+      <div class="row mt-16">
+        <div class="col card glow">
+          <h3>Year-1 budget allocation</h3>
+          <div class="chart-wrap tall mt-16"><canvas id="chart-cost"></canvas></div>
+        </div>
+        <div class="col stack">
+          <div class="card">
+            <h3>Major line items</h3>
+            <ul class="clean mt-16">
+              <li><b>Engineering</b> — model improvement, mobile build, polymer-class extension.</li>
+              <li><b>R&amp;D / dataset</b> — licensed microplastic image sets and annotation contracts.</li>
+              <li><b>Compute &amp; hosting</b> — model training (GPU credits) + lightweight API hosting.</li>
+              <li><b>Education partnerships</b> — pilots in schools, free licenses, content.</li>
+              <li><b>Compliance</b> — alignment with EPA Method 624.1 / ISO 16890 reporting formats.</li>
+              <li><b>Marketing &amp; community</b> — conferences, science-fair ambassador program.</li>
+            </ul>
+          </div>
+          <div class="row" style="gap:12px">
+            <div class="card stat" style="flex:1"><div class="num">~80%</div><div class="lbl">gross margin at scale (SaaS-style)</div></div>
+            <div class="card stat" style="flex:1"><div class="num">&lt; $0.001</div><div class="lbl">marginal cost per local scan</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 18. FINANCIAL MODEL -->
+  <section class="slide">
+    <div class="frame">
+      <span class="eyebrow"><span class="dot"></span>18 · Financial Model</span>
+      <h2>Three-year path to <span class="grad">$2.4M ARR.</span></h2>
+      <div class="row mt-16">
+        <div class="col card glow">
+          <h3>ARR projection · users + revenue</h3>
+          <div class="chart-wrap tall mt-16"><canvas id="chart-finance"></canvas></div>
+          <p class="small">Conservative model: 12% Free → Pro conversion, $9 Pro ARPU, $1,800 Team ARPU, 3 enterprise utilities by Y3 at $20k ACV.</p>
+        </div>
+        <div class="col" style="max-width:420px">
+          <div class="stack" style="height:100%">
+            <div class="card">
+              <h3>Y1 · Validate</h3>
+              <div class="row mt-8" style="gap:10px">
+                <div class="stat" style="flex:1"><div class="num" style="font-size:32px">$48K</div><div class="lbl">ARR · 5k Free, 250 Pro, 5 Team</div></div>
+                <div class="stat" style="flex:1"><div class="num" style="font-size:32px">$120K</div><div class="lbl">spend · grant + bootstrap</div></div>
+              </div>
+            </div>
+            <div class="card">
+              <h3>Y2 · Educate</h3>
+              <div class="row mt-8" style="gap:10px">
+                <div class="stat" style="flex:1"><div class="num" style="font-size:32px">$420K</div><div class="lbl">ARR · 40k Free, 2k Pro, 40 Team, 1 Enterprise</div></div>
+                <div class="stat" style="flex:1"><div class="num" style="font-size:32px">$380K</div><div class="lbl">spend · 4-person team</div></div>
+              </div>
+            </div>
+            <div class="card glow">
+              <h3>Y3 · Embed</h3>
+              <div class="row mt-8" style="gap:10px">
+                <div class="stat" style="flex:1"><div class="num" style="font-size:32px">$2.4M</div><div class="lbl">ARR · 200k Free, 9k Pro, 180 Team, 3 Enterprise</div></div>
+                <div class="stat" style="flex:1"><div class="num" style="font-size:32px">$1.4M</div><div class="lbl">spend · break-even by Q4</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 19. PRODUCT ROADMAP -->
+  <section class="slide">
+    <div class="frame">
+      <span class="eyebrow"><span class="dot"></span>19 · Product Roadmap</span>
+      <h2>From counter to compliance platform.</h2>
+      <div class="row mt-16">
+        <div class="col card glow">
+          <span class="pill cyan">Now → 6 months · Sharper detection</span>
+          <div class="timeline mt-16">
+            <div class="tnode"><div class="when">Q1</div><div class="what">Polymer classification</div><div class="desc">PET / PE / PS / PP / PVC subtypes via fine-tuned head.</div></div>
+            <div class="tnode"><div class="when">Q1</div><div class="what">Confidence calibration</div><div class="desc">Temperature-scaled output so the gauge maps to real probability.</div></div>
+            <div class="tnode"><div class="when">Q2</div><div class="what">Higher-res training set</div><div class="desc">Confocal &amp; SEM imagery added; sub-micron particles handled.</div></div>
+            <div class="tnode"><div class="when">Q2</div><div class="what">PDF compliance report</div><div class="desc">EPA / ISO-style reporting template, signed exports.</div></div>
+          </div>
+        </div>
+        <div class="col card glow">
+          <span class="pill violet">6 → 18 months · New surfaces</span>
+          <div class="timeline mt-16">
+            <div class="tnode"><div class="when">Q3</div><div class="what">Mobile app</div><div class="desc">iOS / Android with clip-on phone microscope adapter.</div></div>
+            <div class="tnode"><div class="when">Q3</div><div class="what">Public API GA</div><div class="desc">Stable /predict, OAuth, $0.05 / image, OpenAPI spec.</div></div>
+            <div class="tnode"><div class="when">Q4</div><div class="what">IoT smart-microscope</div><div class="desc">Raspberry Pi reference design for unattended monitoring.</div></div>
+            <div class="tnode"><div class="when">Q5</div><div class="what">Real-time plant monitoring</div><div class="desc">Continuous sampling for water-treatment facilities.</div></div>
+          </div>
+        </div>
+        <div class="col card glow">
+          <span class="pill emerald">18 → 36 months · Network effects</span>
+          <div class="timeline mt-16">
+            <div class="tnode"><div class="when">Q6</div><div class="what">Public risk map</div><div class="desc">Aggregate, anonymized community water samples on a live US map.</div></div>
+            <div class="tnode"><div class="when">Q7</div><div class="what">Federated learning</div><div class="desc">Partner labs improve the model without sharing raw images.</div></div>
+            <div class="tnode"><div class="when">Q8</div><div class="what">Raman / FTIR fusion</div><div class="desc">Optional confirmatory chemical signal layered on detections.</div></div>
+            <div class="tnode"><div class="when">Q9</div><div class="what">Regulatory module</div><div class="desc">Push-button reporting for state &amp; federal water boards.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 20. FOUNDER -->
+  <section class="slide">
+    <div class="frame">
+      <span class="eyebrow"><span class="dot"></span>20 · Founder</span>
+      <h2>Built by the next generation, <span class="grad">for the next generation.</span></h2>
+      <div class="row mt-16">
+        <div class="col card glow">
+          <span class="pill cyan">About the founder</span>
+          <h3 class="mt-16">Bhavish Jagani</h3>
+          <p class="small" style="margin-top:6px;color:var(--ink)">9th Grade · Bellarmine College Preparatory · San Jose, CA</p>
+          <ul class="clean mt-16">
+            <li>Independently designed, trained and shipped the full MicroPure stack — model, API, dashboard.</li>
+            <li>Ran the 100-student survey, demo sessions, and risk-model calibration himself.</li>
+            <li>Lives the use-case: drinks the school's water every day; understands the audience natively.</li>
+            <li>Long-term mission: make environmental science as legible as a smartphone weather app.</li>
+          </ul>
+        </div>
+        <div class="col card glow">
+          <span class="pill violet">Why this founder, why now</span>
+          <ul class="clean mt-16">
+            <li><b>Authentic distribution channel</b> — direct access to thousands of high-school STEM users.</li>
+            <li><b>Mission-fit</b> — microplastics are a generational problem; Gen Z cares loudest.</li>
+            <li><b>Already shipped</b> — working product, real screenshots, real users, in 2026.</li>
+            <li><b>Coachable team-of-one</b> — actively recruiting mentors from Stanford, USC, and SJSU labs.</li>
+          </ul>
+          <div class="row mt-16" style="gap:10px">
+            <div class="card stat" style="flex:1;padding:14px"><div class="num" style="font-size:28px">100%</div><div class="lbl">of code, model &amp; design shipped solo</div></div>
+            <div class="card stat" style="flex:1;padding:14px"><div class="num" style="font-size:28px">2026</div><div class="lbl">launched as a freshman</div></div>
+          </div>
+        </div>
+        <div class="col" style="max-width:380px">
+          <div class="shot-wrap" style="height:100%">
+            <span class="badge">About Page · Live</span>
+            <img src="assets/about.png" alt="MicroPure About page" class="shot"/>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 21. REFERENCES -->
+  <section class="slide">
+    <div class="frame">
+      <span class="eyebrow"><span class="dot"></span>21 · References</span>
+      <h2>Stand on the shoulders of the data.</h2>
+      <div class="row mt-16" style="align-items:flex-start">
+        <div class="col">
+          <div class="refs">
+            <div class="r"><b>Senathirajah, K., Attwood, S., Bhagwat, G., Carbery, M., Wilson, S., &amp; Palanisami, T.</b> (2021). Estimation of the mass of microplastics ingested — A pivotal first step towards human health risk assessment. <i>Journal of Hazardous Materials, 404</i>, 124004.</div>
+            <div class="r"><b>Leslie, H. A., van Velzen, M. J. M., Brandsma, S. H., Vethaak, A. D., Garcia-Vallejo, J. J., &amp; Lamoree, M. H.</b> (2022). Discovery and quantification of plastic particle pollution in human blood. <i>Environment International, 163</i>, 107199.</div>
+            <div class="r"><b>Ragusa, A., Svelato, A., Santacroce, C., et al.</b> (2021). Plasticenta: First evidence of microplastics in human placenta. <i>Environment International, 146</i>, 106274.</div>
+            <div class="r"><b>Cox, K. D., Covernton, G. A., Davies, H. L., Dower, J. F., Juanes, F., &amp; Dudas, S. E.</b> (2019). Human Consumption of Microplastics. <i>Environmental Science &amp; Technology, 53</i>(12), 7068–7074.</div>
+            <div class="r"><b>Grand View Research.</b> (2024). <i>Microplastic Detection Market Size, Share &amp; Trends Analysis Report, 2024–2032</i>.</div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="refs">
+            <div class="r"><b>World Health Organization.</b> (2019). <i>Microplastics in drinking-water</i>. Geneva: WHO.</div>
+            <div class="r"><b>NOAA Marine Debris Program.</b> (2023). <i>Garbage Patches &amp; Microplastic Pollution Fact Sheet</i>. National Oceanic and Atmospheric Administration.</div>
+            <div class="r"><b>U.S. Environmental Protection Agency.</b> (2024). <i>Safe Drinking Water Information System (SDWIS)</i>. epa.gov/sdwis.</div>
+            <div class="r"><b>California State Water Resources Control Board.</b> (2022). <i>Senate Bill 1422 — Microplastics in Drinking Water</i>.</div>
+            <div class="r"><b>Jocher, G., Chaurasia, A., &amp; Qiu, J.</b> (2023). <i>Ultralytics YOLOv8</i> [Computer software]. github.com/ultralytics/ultralytics.</div>
+            <div class="r"><b>Jagani, B.</b> (2026). <i>MicroPure AI: A YOLOv8-based microplastic detector with multi-factor risk scoring</i>. Bellarmine College Preparatory.</div>
+          </div>
+        </div>
+      </div>
+      <p class="small mt-16">Survey statistics on slide 15 are derived from a primary in-school survey of 100 Bellarmine College Preparatory students (2026); methodology available on request. Market sizing (slides 09–10) is illustrative, blended from Grand View Research, Allied Market Research and EPA SDWIS.</p>
+    </div>
+  </section>
+
+  <!-- 22. THANK YOU -->
+  <section class="slide title-slide">
+    <span class="blob b1"></span><span class="blob b2"></span>
+    <div class="frame center" style="text-align:center;align-items:center">
+      <div>
+        <span class="eyebrow center"><span class="dot"></span>22 · Thank You</span>
+        <h1 class="display">Let's make the<br/><span class="grad">invisible, accountable.</span></h1>
+        <p class="lede mt-16" style="margin-left:auto;margin-right:auto;text-align:center">
+          Questions? Pilot interest? Want a demo for your school, lab, utility or beverage QA team?
+        </p>
+        <div class="meta center" style="justify-content:center">
+          <span class="pill cyan">Bhavish Jagani</span>
+          <span class="pill violet">Bellarmine College Preparatory</span>
+          <span class="pill emerald">San Jose, California</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<div class="nav">
+  <button id="prev" title="Previous (←)">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 6l-6 6 6 6"/></svg>
+  </button>
+  <button id="next" title="Next (→ / Space)">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg>
+  </button>
+</div>
+
+<div class="hint">
+  Navigate: <kbd>←</kbd> <kbd>→</kbd> <kbd>Space</kbd> · Jump: <kbd>1</kbd>–<kbd>9</kbd> · Print to PDF: <kbd>⌘P</kbd>
+</div>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const total = slides.length;
+  let idx = 0;
+  const cur = document.getElementById('cur');
+  const tot = document.getElementById('tot');
+  const bar = document.getElementById('bar');
+  tot.textContent = String(total).padStart(2,'0');
+
+  // Map slide index (0-based) → init function
+  const initMap = {
+    8:  ()=>initMarketChart(),     // slide 09 · Target Markets
+    9:  ()=>initGrowthChart(),     // slide 10 · Market Growth
+    14: ()=>initSurveyCharts(),    // slide 15 · User Validation
+    16: ()=>initCostChart(),       // slide 17 · Cost Structure
+    17: ()=>initFinanceChart(),    // slide 18 · Financial Model
+  };
+
+  function go(n){
+    idx = (n + total) % total;
+    slides.forEach((s,i)=>s.classList.toggle('active', i===idx));
+    cur.textContent = String(idx+1).padStart(2,'0');
+    bar.style.width = (((idx+1)/total)*100)+'%';
+    if(initMap[idx]) initMap[idx]();
+  }
+  document.getElementById('prev').onclick = ()=>go(idx-1);
+  document.getElementById('next').onclick = ()=>go(idx+1);
+  window.addEventListener('keydown',(e)=>{
+    if(['ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();go(idx+1)}
+    else if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();go(idx-1)}
+    else if(e.key==='Home')go(0);
+    else if(e.key==='End')go(total-1);
+    else if(/^[1-9]$/.test(e.key)){
+      const n = parseInt(e.key,10)-1;
+      if(n<total)go(n);
+    }
+  });
+  // click anywhere outside controls to advance
+  document.addEventListener('click',(e)=>{
+    if(e.target.closest('.nav,.hud,a,button,kbd,.card,.refs,.feat,.audience,.price,.ph,.demo,.gauge,.chart-wrap,.vs,.shot-wrap,.segments,.channels,.timeline,.uvp')) return;
+    go(idx+1);
+  });
+
+  // ----- charts -----
+  Chart.defaults.color = '#94a3c4';
+  Chart.defaults.font.family = "Inter, system-ui, sans-serif";
+  Chart.defaults.font.weight = '500';
+
+  let surveyInit=false, marketInit=false, costInit=false, growthInit=false, financeInit=false;
+
+  function gradBar(ctx, vertical=true){
+    return (c)=>{
+      const g = vertical
+        ? c.chart.ctx.createLinearGradient(0,0,0,260)
+        : c.chart.ctx.createLinearGradient(0,0,500,0);
+      g.addColorStop(0,'#22d3ee'); g.addColorStop(.6,'#a78bfa'); g.addColorStop(1,'#fb7185');
+      return g;
+    };
+  }
+
+  function initSurveyCharts(){
+    if(surveyInit) return; surveyInit=true;
+    const a = document.getElementById('chart-awareness').getContext('2d');
+    new Chart(a,{
+      type:'bar',
+      data:{
+        labels:['Aware microplastics\nare in tap water','Concerned about\nhealth impact','Knew current\ntesting methods','Want school\nfountains tested'],
+        datasets:[{
+          label:'% of 100 students',
+          data:[71, 87, 18, 76],
+          backgroundColor: gradBar(),
+          borderRadius:8, barThickness:30
+        }]
+      },
+      options:{
+        plugins:{legend:{display:false}, tooltip:{callbacks:{label:(c)=>c.parsed.y+'%'}}},
+        scales:{
+          y:{beginAtZero:true,max:100,grid:{color:'rgba(148,163,196,.12)'},ticks:{callback:v=>v+'%'}},
+          x:{grid:{display:false},ticks:{maxRotation:0,minRotation:0,font:{size:11}}}
+        },
+        responsive:true, maintainAspectRatio:false
+      }
+    });
+    const b = document.getElementById('chart-adopt').getContext('2d');
+    new Chart(b,{
+      type:'doughnut',
+      data:{
+        labels:['Definitely would use','Probably would use','Maybe','Unlikely'],
+        datasets:[{
+          data:[58, 34, 6, 2],
+          backgroundColor:['#22d3ee','#a78bfa','#fbbf24','#fb7185'],
+          borderColor:'rgba(5,7,15,1)', borderWidth:3
+        }]
+      },
+      options:{
+        cutout:'62%',
+        plugins:{
+          legend:{position:'bottom', labels:{boxWidth:10, padding:14, font:{size:12}}},
+          tooltip:{callbacks:{label:(c)=>c.label+': '+c.parsed+'%'}}
+        },
+        responsive:true, maintainAspectRatio:false
+      }
+    });
+  }
+
+  function initMarketChart(){
+    if(marketInit) return; marketInit=true;
+    const m = document.getElementById('chart-tam').getContext('2d');
+    new Chart(m,{
+      type:'bar',
+      data:{
+        labels:['Municipal water\nutilities','Research labs &\nuniversities','K-12 STEM\nprograms','Beverage QA &\nbottlers','Environmental\nNGOs'],
+        datasets:[{
+          label:'Addressable spend (US, $M / yr, illustrative)',
+          data:[820, 410, 180, 240, 95],
+          backgroundColor: gradBar(false),
+          borderRadius:8, barThickness:24
+        }]
+      },
+      options:{
+        indexAxis:'y',
+        plugins:{legend:{display:false}, tooltip:{callbacks:{label:(c)=>'$'+c.parsed.x+'M / yr'}}},
+        scales:{
+          x:{beginAtZero:true,grid:{color:'rgba(148,163,196,.12)'},ticks:{callback:v=>'$'+v+'M'}},
+          y:{grid:{display:false},ticks:{font:{size:12}}}
+        },
+        responsive:true, maintainAspectRatio:false
+      }
+    });
+  }
+
+  function initGrowthChart(){
+    if(growthInit) return; growthInit=true;
+    const g = document.getElementById('chart-growth').getContext('2d');
+    new Chart(g,{
+      type:'line',
+      data:{
+        labels:['2024','2025','2026','2027','2028','2029','2030','2031','2032'],
+        datasets:[{
+          label:'Global microplastic-testing market ($B)',
+          data:[1.6, 1.9, 2.3, 2.7, 3.2, 3.8, 4.4, 4.9, 5.4],
+          borderColor:'#a78bfa',
+          backgroundColor:(c)=>{
+            const grd = c.chart.ctx.createLinearGradient(0,0,0,330);
+            grd.addColorStop(0,'rgba(34,211,238,.40)'); grd.addColorStop(1,'rgba(167,139,250,0)');
+            return grd;
+          },
+          borderWidth:3,
+          fill:true,
+          tension:.35,
+          pointBackgroundColor:'#22d3ee',
+          pointBorderColor:'#0a1024',
+          pointBorderWidth:2,
+          pointRadius:5,
+          pointHoverRadius:7
+        }]
+      },
+      options:{
+        plugins:{legend:{display:false}, tooltip:{callbacks:{label:(c)=>'$'+c.parsed.y.toFixed(1)+'B'}}},
+        scales:{
+          y:{beginAtZero:true,grid:{color:'rgba(148,163,196,.12)'},ticks:{callback:v=>'$'+v+'B'}},
+          x:{grid:{display:false}}
+        },
+        responsive:true, maintainAspectRatio:false
+      }
+    });
+  }
+
+  function initCostChart(){
+    if(costInit) return; costInit=true;
+    const c = document.getElementById('chart-cost').getContext('2d');
+    new Chart(c,{
+      type:'doughnut',
+      data:{
+        labels:['Engineering','R&D / Dataset','Compute & Hosting','Education partnerships','Compliance','Marketing & Community'],
+        datasets:[{
+          data:[38, 22, 14, 10, 8, 8],
+          backgroundColor:['#22d3ee','#a78bfa','#34d399','#fbbf24','#fb7185','#60a5fa'],
+          borderColor:'rgba(5,7,15,1)', borderWidth:3
+        }]
+      },
+      options:{
+        cutout:'58%',
+        plugins:{
+          legend:{position:'right', labels:{boxWidth:10,padding:12,font:{size:12}}},
+          tooltip:{callbacks:{label:(c)=>c.label+': '+c.parsed+'%'}}
+        },
+        responsive:true, maintainAspectRatio:false
+      }
+    });
+  }
+
+  function initFinanceChart(){
+    if(financeInit) return; financeInit=true;
+    const f = document.getElementById('chart-finance').getContext('2d');
+    new Chart(f,{
+      type:'bar',
+      data:{
+        labels:['Y1','Y2','Y3'],
+        datasets:[
+          {
+            type:'bar',
+            label:'Free users (k)',
+            data:[5, 40, 200],
+            backgroundColor:'rgba(52,211,153,.55)',
+            borderRadius:6,
+            yAxisID:'yUsers',
+            barPercentage:.55,
+            categoryPercentage:.55,
+            order:3
+          },
+          {
+            type:'bar',
+            label:'Pro + Team users (k)',
+            data:[0.255, 2.04, 9.18],
+            backgroundColor:'rgba(167,139,250,.85)',
+            borderRadius:6,
+            yAxisID:'yUsers',
+            barPercentage:.55,
+            categoryPercentage:.55,
+            order:2
+          },
+          {
+            type:'line',
+            label:'ARR ($K)',
+            data:[48, 420, 2400],
+            borderColor:'#22d3ee',
+            backgroundColor:'rgba(34,211,238,.18)',
+            borderWidth:3,
+            tension:.35,
+            fill:false,
+            pointBackgroundColor:'#22d3ee',
+            pointBorderColor:'#0a1024',
+            pointBorderWidth:2,
+            pointRadius:6,
+            yAxisID:'yArr',
+            order:1
+          }
+        ]
+      },
+      options:{
+        plugins:{
+          legend:{position:'bottom', labels:{boxWidth:10,padding:12,font:{size:12}}},
+          tooltip:{callbacks:{label:(c)=>{
+            if(c.dataset.yAxisID==='yArr') return 'ARR: $'+c.parsed.y.toLocaleString()+'K';
+            return c.dataset.label+': '+c.parsed.y+'k';
+          }}}
+        },
+        scales:{
+          x:{grid:{display:false}},
+          yUsers:{
+            type:'linear', position:'left',
+            beginAtZero:true,
+            grid:{color:'rgba(148,163,196,.12)'},
+            ticks:{callback:v=>v+'k users'},
+            title:{display:true, text:'Users (thousands)', color:'#94a3c4'}
+          },
+          yArr:{
+            type:'linear', position:'right',
+            beginAtZero:true,
+            grid:{display:false},
+            ticks:{callback:v=>'$'+v+'K'},
+            title:{display:true, text:'ARR ($K)', color:'#94a3c4'}
+          }
+        },
+        responsive:true, maintainAspectRatio:false
+      }
+    });
+  }
+</script>
+</body>
+</html>
