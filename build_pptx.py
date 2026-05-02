@@ -824,7 +824,7 @@ def slide_markets_revenue():
     add_footer_brand(s)
 
 
-# ---------- SLIDE 8: COST + FINANCIALS ----------
+# ---------- SLIDE 8: COST STRUCTURE + 12-MONTH ROLLOUT ----------
 def slide_finance():
     s = prs.slides.add_slide(BLANK)
     add_bg(s)
@@ -834,12 +834,12 @@ def slide_finance():
         s,
         Inches(0.6),
         Inches(0.95),
-        Inches(12),
+        Inches(12.2),
         Inches(1.0),
         [
-            ("Lean now. Path to ", {"size": 32, "bold": True, "color": INK}),
-            ("$2.4M ARR", {"size": 32, "bold": True, "color": CYAN}),
-            (" in three years.", {"size": 32, "bold": True, "color": INK}),
+            ("Lean spend, ", {"size": 32, "bold": True, "color": INK}),
+            ("staged rollout", {"size": 32, "bold": True, "color": CYAN}),
+            (" — every quarter ships a new product and a new tier.", {"size": 32, "bold": True, "color": INK}),
         ],
         line_spacing=1.05,
     )
@@ -847,7 +847,7 @@ def slide_finance():
     # LEFT: Cost structure card
     cx = Inches(0.6)
     cy = Inches(2.3)
-    cw = Inches(5.6)
+    cw = Inches(4.6)
     ch = Inches(4.6)
     add_card(s, cx, cy, cw, ch)
     add_pill(s, cx + Inches(0.25), cy + Inches(0.2), "Year-1 cost allocation", color=CYAN, fill=RGBColor(0x09, 0x2C, 0x3A))
@@ -864,53 +864,107 @@ def slide_finance():
     bar_w_emu = cw - Inches(0.5)  # int EMU
     for label, color, pct in cost_items:
         add_text(s, cx + Inches(0.3), by, cw - Inches(0.6), Inches(0.25), label, size=11, color=INK)
-        # bar background
         bg = s.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, cx + Inches(0.3), by + Inches(0.28), Emu(bar_w_emu), Inches(0.18))
         bg.adjustments[0] = 0.5
         bg.fill.solid()
         bg.fill.fore_color.rgb = RGBColor(0x1A, 0x22, 0x40)
         bg.line.fill.background()
         bg.shadow.inherit = False
-        # bar fill
         fill = s.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, cx + Inches(0.3), by + Inches(0.28), Emu(int(bar_w_emu * pct)), Inches(0.18))
         fill.adjustments[0] = 0.5
         fill.fill.solid()
         fill.fill.fore_color.rgb = color
         fill.line.fill.background()
         fill.shadow.inherit = False
-        by += Inches(0.6)
+        by += Inches(0.55)
 
     add_text(
         s,
         cx + Inches(0.3),
-        cy + ch - Inches(0.65),
+        cy + ch - Inches(0.6),
         cw - Inches(0.6),
-        Inches(0.5),
-        "~80% gross margin at scale  ·  < $0.001 marginal cost per local scan",
+        Inches(0.45),
+        "~80% gross margin  ·  < $0.001 per local scan",
         size=11,
         bold=True,
         color=INK_DIM,
     )
 
-    # RIGHT: 3-year ARR cards
-    fx = Inches(6.5)
+    # RIGHT: 4 milestone cards (3 / 6 / 9 / 12 months)
+    fx = Inches(5.4)
     fy = Inches(2.3)
-    fw = Inches(6.3)
-    fh = Inches(1.4)
+    fw = Inches(7.4)
+    fh = Inches(1.07)
     gap = Inches(0.1)
 
-    years = [
-        ("Y1 · Validate", "$48K", "ARR", "5k Free · 250 Pro · 5 Team", "$120K spend · grant + bootstrap", CYAN, False),
-        ("Y2 · Educate", "$420K", "ARR", "40k Free · 2k Pro · 40 Team · 1 Enterprise", "$380K spend · 4-person team", VIOLET, False),
-        ("Y3 · Embed", "$2.4M", "ARR", "200k Free · 9k Pro · 180 Team · 3 Enterprise", "$1.4M spend · break-even by Q4", EMERALD, True),
+    milestones = [
+        (
+            "3 MONTHS",
+            "Free launch",
+            "Free",
+            "$0",
+            "Local app · open dataset · Discord community",
+            "1.5k users  ·  $0 ARR",
+            CYAN,
+            False,
+        ),
+        (
+            "6 MONTHS",
+            "Pro tier live",
+            "Pro",
+            "$9 / mo",
+            "Cloud sync · branded PDF reports · history",
+            "8k users · 300 Pro  ·  ~$32K ARR",
+            VIOLET,
+            False,
+        ),
+        (
+            "9 MONTHS",
+            "Team + API",
+            "Team / API",
+            "$99 / mo  ·  $0.05 / image",
+            "Multi-seat dashboards · API for OEMs / labs",
+            "20k users · 1.2k Pro · 25 Team  ·  ~$160K ARR",
+            EMERALD,
+            False,
+        ),
+        (
+            "12 MONTHS",
+            "Enterprise pilot",
+            "Enterprise",
+            "$5–50K / yr",
+            "On-prem / air-gapped · compliance reports",
+            "35k users · 2.5k Pro · 60 Team · 2 Enterprise  ·  ~$420K ARR",
+            AMBER,
+            True,
+        ),
     ]
+
     cur_y = fy
-    for label, num, unit, mix, spend, accent, hi in years:
+    for when, title, tier, price, products, mix, accent, hi in milestones:
         add_card(s, fx, cur_y, fw, fh, fill=BG_PANEL if hi else BG_CARD, border=accent if hi else LINE)
-        add_text(s, fx + Inches(0.25), cur_y + Inches(0.2), Inches(2.5), Inches(0.4), label, size=14, bold=True, color=INK)
-        add_text(s, fx + Inches(0.25), cur_y + Inches(0.6), Inches(2.5), Inches(0.7), num, size=32, bold=True, color=accent)
-        add_text(s, fx + Inches(2.6), cur_y + Inches(0.25), fw - Inches(2.85), Inches(0.4), mix, size=11, bold=True, color=INK)
-        add_text(s, fx + Inches(2.6), cur_y + Inches(0.7), fw - Inches(2.85), Inches(0.5), spend, size=11, color=INK_DIM)
+        # left rail with quarter label
+        rail = s.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, fx + Inches(0.18), cur_y + Inches(0.18), Inches(1.15), fh - Inches(0.36))
+        rail.adjustments[0] = 0.18
+        rail.fill.solid()
+        rail.fill.fore_color.rgb = RGBColor(0x10, 0x18, 0x30)
+        rail.line.color.rgb = accent
+        rail.line.width = Pt(0.75)
+        rail.shadow.inherit = False
+        add_text(s, fx + Inches(0.18), cur_y + Inches(0.22), Inches(1.15), Inches(0.32), when, size=10, bold=True, color=accent, align=PP_ALIGN.CENTER)
+        add_text(s, fx + Inches(0.18), cur_y + Inches(0.5), Inches(1.15), Inches(0.4), title, size=12, bold=True, color=INK, align=PP_ALIGN.CENTER, line_spacing=1.1)
+
+        # middle: product / tier
+        mx = fx + Inches(1.5)
+        add_text(s, mx, cur_y + Inches(0.18), Inches(2.4), Inches(0.32), tier.upper(), size=10, bold=True, color=INK_DIM)
+        add_text(s, mx, cur_y + Inches(0.45), Inches(2.4), Inches(0.45), price, size=18, bold=True, color=accent)
+        add_text(s, mx, cur_y + Inches(0.78), Inches(2.4), Inches(0.32), products, size=9.5, color=INK_DIM, line_spacing=1.25)
+
+        # right: traction
+        rx = fx + Inches(4.1)
+        add_text(s, rx, cur_y + Inches(0.18), Inches(3.2), Inches(0.32), "TRACTION", size=10, bold=True, color=INK_DIM)
+        add_text(s, rx, cur_y + Inches(0.45), Inches(3.2), Inches(0.6), mix, size=12, bold=True, color=INK, line_spacing=1.3)
+
         cur_y += fh + gap
 
     add_footer_brand(s)
